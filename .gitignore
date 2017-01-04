@@ -7,3 +7,5 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+.idea/
+src/test/java/com/muchencute/commons/aliyun/

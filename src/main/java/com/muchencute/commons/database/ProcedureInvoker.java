@@ -1,23 +1,32 @@
 package com.muchencute.commons.database;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.ArrayList;
 
 @SuppressWarnings("ALL")
 public class ProcedureInvoker {
 
     private boolean mErrorOccured = false;
+
     private String mErrorMessage = "";
 
     private DataSource mDataSource;
+
     private Connection mConnection = null;
+
     private CallableStatement mStatement = null;
+
     private ResultSet mResultSet = null;
+
     // 出参寄存器
     private ArrayList<Object> mOutParams = new ArrayList<>();
 
     public ProcedureInvoker(DataSource dataSource) {
+
         mDataSource = dataSource;
     }
 
@@ -94,7 +103,7 @@ public class ProcedureInvoker {
                         return this;
                 }
             }
-        } catch (SQLException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             mErrorOccured = true;
             mErrorMessage = e.getLocalizedMessage();
@@ -115,7 +124,7 @@ public class ProcedureInvoker {
 
         try {
             executed.executed(mResultSet, mOutParams);
-        } catch (SQLException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             mErrorOccured = true;
             mErrorMessage = e.getLocalizedMessage();
@@ -132,7 +141,7 @@ public class ProcedureInvoker {
         if (mResultSet != null) {
             try {
                 mResultSet.close();
-            } catch (SQLException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
@@ -140,7 +149,7 @@ public class ProcedureInvoker {
         if (mStatement != null) {
             try {
                 mStatement.close();
-            } catch (SQLException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
@@ -148,17 +157,19 @@ public class ProcedureInvoker {
         if (mConnection != null) {
             try {
                 mConnection.close();
-            } catch (SQLException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
     }
 
     public boolean isErrorOccured() {
+
         return mErrorOccured;
     }
 
     public String getErrorMessage() {
+
         return mErrorMessage;
     }
 }

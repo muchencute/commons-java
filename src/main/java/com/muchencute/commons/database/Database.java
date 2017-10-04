@@ -11,13 +11,11 @@ public class Database {
 
     private DataSource dataSource;
 
-    private String mContextName;
-
-    private Database() {
+    private Database(String contextName) {
 
         try {
             Context initContext = new InitialContext();
-            dataSource = (DataSource) initContext.lookup(mContextName);
+            dataSource = (DataSource) initContext.lookup(contextName);
         } catch (NamingException e) {
             e.printStackTrace();
             // System.exit(0);
@@ -29,10 +27,8 @@ public class Database {
         return instance.dataSource;
     }
 
-    public void initContext(String contextName) {
+    public static void initContext(String contextName) {
 
-        this.mContextName = contextName;
-
-        instance = new Database();
+        instance = new Database(contextName);
     }
 }

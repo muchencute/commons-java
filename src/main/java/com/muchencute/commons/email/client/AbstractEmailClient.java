@@ -1,13 +1,13 @@
 package com.muchencute.commons.email.client;
 
 import com.muchencute.commons.email.builder.AbstractEmailClientBuilder;
-import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.ArrayList;
 
 public abstract class AbstractEmailClient {
 
-    ArrayList<Pair<String, String>> mTos = new ArrayList<>();
+    ArrayList<ImmutablePair<String, String>> mTos = new ArrayList<>();
 
     String mMessage;
 
@@ -31,7 +31,7 @@ public abstract class AbstractEmailClient {
 
     public void addTo(String email, String displayName) {
 
-        mTos.add(new Pair<>(email, displayName));
+        mTos.add(new ImmutablePair<>(email, displayName));
     }
 
     public abstract void send();

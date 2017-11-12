@@ -1,7 +1,7 @@
 package com.muchencute.commons.email.client;
 
 import com.muchencute.commons.email.builder.AbstractEmailClientBuilder;
-import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 

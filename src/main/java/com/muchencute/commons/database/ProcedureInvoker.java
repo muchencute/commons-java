@@ -80,8 +80,8 @@ public class ProcedureInvoker {
                     outParamPositions.add(i + 1);
                 } else if (params[i] instanceof Boolean) {
                     mStatement.setBoolean(i + 1, (Boolean) params[i]);
-                } else if (params[i] instanceof BigInteger) {
-                    mStatement.setObject(i + 1, params[i]);
+                } else if (params[i] instanceof Long) {
+                    mStatement.setLong(i + 1, (Long) params[i]);
                 } else {
                     mErrorOccured = true;
                     mErrorMessage = String.format("%s 是不支持的数据类型", params.getClass());
@@ -103,7 +103,7 @@ public class ProcedureInvoker {
                         mOutParams.add(mStatement.getFloat(position));
                         break;
                     case Types.BIGINT:
-                        mOutParams.add((BigInteger) mStatement.getObject(position));
+                        mOutParams.add(mStatement.getLong(position));
                         break;
                     default:
                         mErrorOccured = true;

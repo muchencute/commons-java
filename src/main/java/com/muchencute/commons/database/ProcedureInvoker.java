@@ -1,6 +1,7 @@
 package com.muchencute.commons.database;
 
 import javax.sql.DataSource;
+import java.math.BigInteger;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -39,7 +40,9 @@ public class ProcedureInvoker {
      */
     public ProcedureInvoker call(String procedure, Object... params) {
 
-        if (mErrorOccured) return this;
+        if (mErrorOccured) {
+            return this;
+        }
 
         if (mDataSource == null) {
             mErrorOccured = true;
@@ -66,17 +69,19 @@ public class ProcedureInvoker {
             for (int i = 0, length = params.length; i < length; i++) {
                 if (params[i] == null) {
                     mStatement.setObject(i + 1, null);
-                } else if (params[i] instanceof Integer)
+                } else if (params[i] instanceof Integer) {
                     mStatement.setInt(i + 1, (Integer) params[i]);
-                else if (params[i] instanceof Float)
+                } else if (params[i] instanceof Float) {
                     mStatement.setFloat(i + 1, (Float) params[i]);
-                else if (params[i] instanceof String)
+                } else if (params[i] instanceof String) {
                     mStatement.setString(i + 1, (String) params[i]);
-                else if (params[i] instanceof OutParam) {
+                } else if (params[i] instanceof OutParam) {
                     mStatement.registerOutParameter(i + 1, ((OutParam) params[i]).getType());
                     outParamPositions.add(i + 1);
                 } else if (params[i] instanceof Boolean) {
                     mStatement.setBoolean(i + 1, (Boolean) params[i]);
+                } else if (params[i] instanceof BigInteger) {
+                    mStatement.setObject(i + 1, params[i]);
                 } else {
                     mErrorOccured = true;
                     mErrorMessage = String.format("%s 是不支持的数据类型", params.getClass());
@@ -96,6 +101,9 @@ public class ProcedureInvoker {
                         break;
                     case Types.FLOAT:
                         mOutParams.add(mStatement.getFloat(position));
+                        break;
+                    case Types.BIGINT:
+                        mOutParams.add((BigInteger) mStatement.getObject(position));
                         break;
                     default:
                         mErrorOccured = true;
@@ -120,7 +128,9 @@ public class ProcedureInvoker {
      */
     public ProcedureInvoker executed(Executed executed) {
 
-        if (mErrorOccured) return this;
+        if (mErrorOccured) {
+            return this;
+        }
 
         try {
             executed.executed(mResultSet, mOutParams);

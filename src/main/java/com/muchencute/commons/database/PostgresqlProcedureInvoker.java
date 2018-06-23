@@ -12,6 +12,6 @@ public final class PostgresqlProcedureInvoker extends ProcedureInvoker {
     @Override
     protected String getFormatter() {
 
-        return "SELECT %s(%s)";
+        return "SELECT * FROM %s(%s)";
     }
 }

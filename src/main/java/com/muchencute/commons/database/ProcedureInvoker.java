@@ -7,6 +7,9 @@ import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.ArrayList;
 
+/**
+ * MySQL
+ */
 @SuppressWarnings("ALL")
 public class ProcedureInvoker {
 

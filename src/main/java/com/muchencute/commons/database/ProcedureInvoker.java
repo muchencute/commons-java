@@ -1,7 +1,6 @@
 package com.muchencute.commons.database;
 
 import javax.sql.DataSource;
-import java.math.BigInteger;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -62,7 +61,7 @@ public class ProcedureInvoker {
             for (int i = 0, length = params.length; i < length; i++) {
                 arguments.append(i < length - 1 ? "?," : "?");
             }
-            String sql = String.format("CALL %s(%s);", procedure, arguments);
+            String sql = String.format(getFormatter(), procedure, arguments);
             mStatement = mConnection.prepareCall(sql);
 
             ArrayList<Integer> outParamPositions = new ArrayList<>();
@@ -182,4 +181,9 @@ public class ProcedureInvoker {
 
         return mErrorMessage;
     }
+
+    protected String getFormatter() {
+        return "CALL %s(%s)";
+    }
+
 }

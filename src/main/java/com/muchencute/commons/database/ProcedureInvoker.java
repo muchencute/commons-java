@@ -1,11 +1,9 @@
 package com.muchencute.commons.database;
 
 import javax.sql.DataSource;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
@@ -86,18 +84,29 @@ public class ProcedureInvoker {
                     mStatement.setBoolean(i + 1, (Boolean) params[i]);
                 } else if (params[i] instanceof Long) {
                     mStatement.setLong(i + 1, (Long) params[i]);
-                } else if (params[i] instanceof int[]) {
-                    mStatement.setArray(i + 1,
-                            mConnection.createArrayOf("integer", IntStream.of((int[]) params[i]).boxed().toArray(Integer[]::new))
-                    );
-                } else if (params[i] instanceof long[]) {
-                    mStatement.setArray(i + 1,
-                            mConnection.createArrayOf("bigint", LongStream.of((long[]) params[i]).boxed().toArray(Long[]::new))
-                    );
-                } else if (params[i] instanceof String[]) {
-                    mStatement.setArray(i + 1,
-                            mConnection.createArrayOf("varchar", (String[]) params[i])
-                    );
+                } else if (params[i] instanceof List) {
+                    final List list = (List) params[i];
+                    final Array parameters;
+                    if (list.isEmpty()) {
+                        mErrorOccured = true;
+                        mErrorMessage = String.format("数组参数为空", params.getClass());
+                    } else if (list.get(0) instanceof Integer) {
+                        mStatement.setArray(i + 1,
+                                mConnection.createArrayOf("integer", list.toArray())
+                        );
+                    } else if (list.get(0) instanceof Long) {
+                        mStatement.setArray(i + 1,
+                                mConnection.createArrayOf("bigint", list.toArray())
+                        );
+                    } else if (list.get(0) instanceof String) {
+                        mStatement.setArray(i + 1,
+                                mConnection.createArrayOf("varchar", list.toArray())
+                        );
+                    } else {
+                        mErrorOccured = true;
+                        mErrorMessage = String.format("%s 是不支持的数组类型", list.get(0).getClass());
+                        return this;
+                    }
                 } else {
                     mErrorOccured = true;
                     mErrorMessage = String.format("%s 是不支持的数据类型", params.getClass());

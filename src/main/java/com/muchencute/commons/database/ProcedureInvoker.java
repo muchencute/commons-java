@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 /**
  * MySQL
@@ -84,6 +86,12 @@ public class ProcedureInvoker {
                     mStatement.setBoolean(i + 1, (Boolean) params[i]);
                 } else if (params[i] instanceof Long) {
                     mStatement.setLong(i + 1, (Long) params[i]);
+                } else if (params[i] instanceof int[]) {
+                    mConnection.createArrayOf("integer", IntStream.of((int[]) params[i]).boxed().toArray(Integer[]::new));
+                } else if (params[i] instanceof long[]) {
+                    mConnection.createArrayOf("bigint", LongStream.of((long[]) params[i]).boxed().toArray(Long[]::new));
+                } else if (params[i] instanceof String[]) {
+                    mConnection.createArrayOf("varchar", (String[]) params[i]);
                 } else {
                     mErrorOccured = true;
                     mErrorMessage = String.format("%s 是不支持的数据类型", params.getClass());

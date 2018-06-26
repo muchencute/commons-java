@@ -87,11 +87,17 @@ public class ProcedureInvoker {
                 } else if (params[i] instanceof Long) {
                     mStatement.setLong(i + 1, (Long) params[i]);
                 } else if (params[i] instanceof int[]) {
-                    mConnection.createArrayOf("integer", IntStream.of((int[]) params[i]).boxed().toArray(Integer[]::new));
+                    mStatement.setArray(i + 1,
+                            mConnection.createArrayOf("integer", IntStream.of((int[]) params[i]).boxed().toArray(Integer[]::new))
+                    );
                 } else if (params[i] instanceof long[]) {
-                    mConnection.createArrayOf("bigint", LongStream.of((long[]) params[i]).boxed().toArray(Long[]::new));
+                    mStatement.setArray(i + 1,
+                            mConnection.createArrayOf("bigint", LongStream.of((long[]) params[i]).boxed().toArray(Long[]::new))
+                    );
                 } else if (params[i] instanceof String[]) {
-                    mConnection.createArrayOf("varchar", (String[]) params[i]);
+                    mStatement.setArray(i + 1,
+                            mConnection.createArrayOf("varchar", (String[]) params[i])
+                    );
                 } else {
                     mErrorOccured = true;
                     mErrorMessage = String.format("%s 是不支持的数据类型", params.getClass());
@@ -194,6 +200,7 @@ public class ProcedureInvoker {
     }
 
     protected String getFormatter() {
+
         return "CALL %s(%s)";
     }
 

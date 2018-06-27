@@ -16,7 +16,7 @@ public class RouteUtils {
      */
     public static boolean matchParameterizedRoute(String route, String path) {
 
-        StringTokenizer routeTokenizer = new StringTokenizer(route, "/");
+        StringTokenizer routeTokenizer = new StringTokenizer(StringUtils.substringBefore(route, "?"), "/");
         StringTokenizer pathTokenizer = new StringTokenizer(path, "/");
 
         if (routeTokenizer.countTokens() != pathTokenizer.countTokens()) {

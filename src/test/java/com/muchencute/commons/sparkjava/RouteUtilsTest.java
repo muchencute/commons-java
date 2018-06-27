@@ -19,8 +19,8 @@ public class RouteUtilsTest extends TestCase {
         path = "/api/v1/permissionuser";
         Assert.assertTrue(RouteUtils.matchParameterizedRoute(route, path));
 
-        route = "patch./api/v1/permissionrole/:roleName?status";
-        path = "patch./api/v1/permissionrole/管理员?status=removed";
+        route = "patch./api/v1/permissionrole?roleName=分析师&status=normal";
+        path = "patch./api/v1/permissionrole";
         Assert.assertTrue(RouteUtils.matchParameterizedRoute(route, path));
     }
 

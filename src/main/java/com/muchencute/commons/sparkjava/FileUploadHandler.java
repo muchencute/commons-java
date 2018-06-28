@@ -62,7 +62,7 @@ public class FileUploadHandler {
         try {
             inputStream = part.getInputStream();
             mFilename = getFileName(part);
-            String extension = getFileExt(mFilename);
+            String extension = getFileExt(mFilename != null ? mFilename : "");
 
             if (!allowedExtensionName.contains(extension.toLowerCase())) {
                 mErrorOccurred = true;

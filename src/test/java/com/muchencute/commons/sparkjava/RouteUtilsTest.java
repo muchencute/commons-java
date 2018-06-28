@@ -40,5 +40,10 @@ public class RouteUtilsTest extends TestCase {
         Assert.assertFalse(RouteUtils.matchQueryParameters(route, new HashSet<String>() {{
             add("roleName");
         }}));
+
+        route = "?username&status";
+        Assert.assertFalse(RouteUtils.matchQueryParameters(route, new HashSet<String>() {{
+            add("resetpwd");
+        }}));
     }
 }

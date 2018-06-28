@@ -37,7 +37,7 @@ public class RouteUtils {
     /**
      * 判断实际请求的查询参数是否满足路由的定义
      *
-     * @param route              原始路由
+     * @param route              原始路由，必须包含?，否则视为没有查询参数
      * @param requestQueryParams 实际请求的查询参数
      * @return 满足则返回 true，不满足则返回 false
      */

@@ -1,144 +1,82 @@
 package com.muchencute.commons.sparkjava;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import spark.Request;
+import org.apache.commons.io.FilenameUtils;
 
-import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 
 /**
  * 文件上传请求 Handler
+ *
+ * @author miguoliang
  */
 public class FileUploadHandler {
 
-    private boolean mErrorOccurred = false;
+    private static final String FIELD_NAME = "file";
 
-    private String mErrorMessage = "";
+    private final String mFieldName;
 
-    private String mFilename = "";
+    private final HttpServletRequest mRequest;
 
-    private String mNewFilename = "";
+    private final String mDestination;
 
-    public FileUploadHandler(Request req, String storagePath, int maxFileSize,
-                             ArrayList<String> allowedExtensionName) {
+    private final Set<String> mExtensions;
 
-        this(req, storagePath, maxFileSize, allowedExtensionName, "file", true);
+    private final boolean mMultiple;
+
+    public FileUploadHandler(HttpServletRequest req, String destination, Set<String> extensions) {
+
+        this(req, destination, extensions, FIELD_NAME, false);
     }
 
-    public FileUploadHandler(Request req, String storagePath, int maxFileSize, ArrayList<String> allowedExtensionName,
-                             String formName, boolean useOriginFilename) {
+    public FileUploadHandler(final HttpServletRequest req, final String destination, final Set<String> extensions,
+                             final String fieldName, final boolean multiple) {
 
-        req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement(storagePath));
+        this.mFieldName = fieldName;
+        this.mRequest = req;
+        this.mDestination = destination;
+        this.mMultiple = multiple;
 
-        Part part;
-        try {
-            part = req.raw().getPart(formName);
-        } catch (IOException | ServletException e) {
-            mErrorOccurred = true;
-            mErrorMessage = e.getLocalizedMessage();
-            e.printStackTrace();
-            return;
-        }
-
-        if (part == null) {
-            mErrorOccurred = true;
-            mErrorMessage = "no requested part";
-            return;
-        }
-
-        InputStream inputStream;
-        try {
-            inputStream = part.getInputStream();
-            mFilename = getFileName(part);
-            String extension = getFileExt(mFilename != null ? mFilename : "");
-
-            if (!allowedExtensionName.contains(extension.toLowerCase())) {
-                mErrorOccurred = true;
-                mErrorMessage = "Not allowed file type";
-                return;
-            }
-
-            int fileSize = inputStream.available();
-
-            if (fileSize < 0 || fileSize > maxFileSize) {
-                mErrorOccurred = true;
-                mErrorMessage = "Invalid file size";
-                return;
-            }
-
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-            bufferedInputStream.mark(0);
-
-            if (!useOriginFilename) {
-                mNewFilename = String.format("%s%s",
-                        DigestUtils.md5Hex(bufferedInputStream), extension);
-            } else {
-                mNewFilename = mFilename;
-            }
-
-            Path target = Paths.get(storagePath, mNewFilename);
-            inputStream.reset();
-            Files.copy(bufferedInputStream, target, StandardCopyOption.REPLACE_EXISTING);
-
-            Set<PosixFilePermission> defaultPermissions = new HashSet<>();
-            defaultPermissions.add(PosixFilePermission.OWNER_READ);
-            defaultPermissions.add(PosixFilePermission.OWNER_WRITE);
-            defaultPermissions.add(PosixFilePermission.GROUP_READ);
-            defaultPermissions.add(PosixFilePermission.OTHERS_READ);
-
-            Files.setPosixFilePermissions(target, defaultPermissions);
-
-        } catch (IOException e) {
-            mErrorOccurred = true;
-            mErrorMessage = e.getLocalizedMessage();
-            e.printStackTrace();
-        }
+        extensions.forEach(s -> s = s.toLowerCase());
+        this.mExtensions = extensions;
     }
 
-    private static String getFileName(Part part) {
+    public void handle(UnaryOperator<String> filenameOperator) throws IOException, ServletException {
 
-        for (String cd : part.getHeader("content-disposition").split(";")) {
-            if (cd.trim().startsWith("filename")) {
-                return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+        for (Part part : mRequest.getParts()) {
+            if (part.getName().equalsIgnoreCase(mFieldName) &&
+                    mExtensions.contains(FilenameUtils.getExtension(part.getSubmittedFileName()).toLowerCase())) {
+                persistOnDisk(part, filenameOperator);
+                if (!mMultiple) {
+                    return;
+                }
             }
         }
-        return null;
     }
 
-    private static String getFileExt(String name) {
-        // 包含点 (.)
-        return name.substring(name.lastIndexOf('.'));
+    private void persistOnDisk(Part part, UnaryOperator<String> filenameOperator) throws IOException {
+
+        Set<PosixFilePermission> defaultPermissions = new HashSet<PosixFilePermission>() {{
+            add(PosixFilePermission.OWNER_READ);
+            add(PosixFilePermission.OWNER_WRITE);
+            add(PosixFilePermission.GROUP_READ);
+            add(PosixFilePermission.OTHERS_READ);
+        }};
+
+        Path target = Paths.get(mDestination, filenameOperator.apply(part.getSubmittedFileName()));
+        Files.copy(part.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
+        Files.setPosixFilePermissions(target, defaultPermissions);
     }
 
-    public String getErrorMessage() {
-
-        return mErrorMessage;
-    }
-
-    public boolean isErrorOccurred() {
-
-        return mErrorOccurred;
-    }
-
-    public String getNewFilename() {
-
-        return mNewFilename;
-    }
-
-    public String getFilename() {
-
-        return mFilename;
-    }
 }

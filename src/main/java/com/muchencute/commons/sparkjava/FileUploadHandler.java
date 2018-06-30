@@ -5,6 +5,7 @@ import org.apache.commons.io.FilenameUtils;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,18 +30,18 @@ public class FileUploadHandler {
 
     private final HttpServletRequest mRequest;
 
-    private final String mDestination;
+    private final File mDestination;
 
     private final Set<String> mExtensions;
 
     private final boolean mMultiple;
 
-    public FileUploadHandler(HttpServletRequest req, String destination, Set<String> extensions) {
+    public FileUploadHandler(HttpServletRequest req, File destination, Set<String> extensions) {
 
         this(req, destination, extensions, FIELD_NAME, false);
     }
 
-    public FileUploadHandler(final HttpServletRequest req, final String destination, final Set<String> extensions,
+    public FileUploadHandler(final HttpServletRequest req, final File destination, final Set<String> extensions,
                              final String fieldName, final boolean multiple) {
 
         this.mFieldName = fieldName;
@@ -74,7 +75,7 @@ public class FileUploadHandler {
             add(PosixFilePermission.OTHERS_READ);
         }};
 
-        Path target = Paths.get(mDestination, filenameOperator.apply(part.getSubmittedFileName()));
+        Path target = Paths.get(mDestination.getAbsolutePath(), filenameOperator.apply(part.getSubmittedFileName()));
         Files.copy(part.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
         Files.setPosixFilePermissions(target, defaultPermissions);
     }

@@ -12,9 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 /**
@@ -53,20 +51,24 @@ public class FileUploadHandler {
         this.mExtensions = extensions;
     }
 
-    public void handle(UnaryOperator<String> filenameOperator) throws IOException, ServletException {
+    public List<File> handle(UnaryOperator<String> filenameOperator) throws IOException, ServletException {
+
+        List<File> files = new LinkedList<>();
 
         for (Part part : mRequest.getParts()) {
             if (part.getName().equalsIgnoreCase(mFieldName) &&
                     mExtensions.contains(FilenameUtils.getExtension(part.getSubmittedFileName()).toLowerCase())) {
-                persistOnDisk(part, filenameOperator);
+                files.add(persistOnDisk(part, filenameOperator));
                 if (!mMultiple) {
-                    return;
+                    break;
                 }
             }
         }
+
+        return files;
     }
 
-    private void persistOnDisk(Part part, UnaryOperator<String> filenameOperator) throws IOException {
+    private File persistOnDisk(Part part, UnaryOperator<String> filenameOperator) throws IOException {
 
         Set<PosixFilePermission> defaultPermissions = new HashSet<PosixFilePermission>() {{
             add(PosixFilePermission.OWNER_READ);
@@ -75,9 +77,12 @@ public class FileUploadHandler {
             add(PosixFilePermission.OTHERS_READ);
         }};
 
-        Path target = Paths.get(mDestination.getAbsolutePath(), filenameOperator.apply(part.getSubmittedFileName()));
+        final String filename = filenameOperator.apply(part.getSubmittedFileName());
+        final Path target = Paths.get(mDestination.getAbsolutePath(), filename);
         Files.copy(part.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
         Files.setPosixFilePermissions(target, defaultPermissions);
+
+        return new File(mDestination, filename);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.muchencute.commons.validator;
 
+import com.muchencute.commons.regexp.RegexpUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,7 +13,7 @@ public class Validator {
     // 手机号码
     private static Pattern cellphonePattern = Pattern.compile("^(13[0-9]|14[0-9]|15[0-9]|18[0-9]|17[0-9])\\d{8}$");
     // Email
-    private static Pattern emailPattern = Pattern.compile("^(\\w)+(\\.\\w+)*@(\\w)+((\\.\\w+)+)$");
+    private static Pattern emailPattern = Pattern.compile(RegexpUtils.EMAIL);
     // 用户名
     private static Pattern usernamePattern = Pattern.compile("^[a-zA-Z0-9@.-_]+$");
     // 密码

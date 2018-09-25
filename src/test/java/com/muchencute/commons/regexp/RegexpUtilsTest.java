@@ -5,9 +5,7 @@ import junit.framework.TestCase;
 
 import java.util.regex.Pattern;
 
-import static com.muchencute.commons.regexp.RegexpUtils.EMAIL;
-import static com.muchencute.commons.regexp.RegexpUtils.PASSWORD;
-import static com.muchencute.commons.regexp.RegexpUtils.USERNAME;
+import static com.muchencute.commons.regexp.RegexpUtils.*;
 
 public class RegexpUtilsTest extends TestCase {
 
@@ -19,6 +17,7 @@ public class RegexpUtilsTest extends TestCase {
     public void testPassword() {
 
         Assert.assertTrue(Pattern.matches(PASSWORD, "hl74dxinF@4tBUg4v"));
+        Assert.assertTrue(Pattern.matches(PASSWORD2, "hl74dxinF@4tBUg4v"));
     }
 
     public void testEmail() {

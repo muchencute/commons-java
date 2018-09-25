@@ -11,6 +11,8 @@ public final class RegexpUtils {
 
     public static final String PASSWORD = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
 
+    public static final String PASSWORD2 = "((?=.*\\d)(?=.*[a-z])(?=.*[@#$%]).{6,20})";
+
     public static final String HEXADECIMAL_COLOR_CODE = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";
 
     public static final String EMAIL = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+" +

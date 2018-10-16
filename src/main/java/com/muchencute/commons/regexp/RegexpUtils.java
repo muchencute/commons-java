@@ -15,6 +15,9 @@ public final class RegexpUtils {
 
     public static final String HEXADECIMAL_COLOR_CODE = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";
 
+    // 参看: https://stackoverflow.com/questions/42104546/java-regular-expressions-to-validate-phone-numbers
+    public static final String PHONE = "^\\+?\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}";
+
     public static final String EMAIL = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+" +
             "(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 

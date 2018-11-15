@@ -16,8 +16,9 @@ public class RegexpUtilsTest extends TestCase {
 
     public void testPassword() {
 
-        Assert.assertTrue(Pattern.matches(PASSWORD, "hl74dxinF@4tBUg4v"));
         Assert.assertTrue(Pattern.matches(PASSWORD2, "hl74dxinF@4tBUg4v"));
+        Assert.assertTrue(Pattern.matches(PASSWORD2, "abc123"));
+        Assert.assertTrue(Pattern.matches(PASSWORD2, "Abc123"));
     }
 
     public void testEmail() {

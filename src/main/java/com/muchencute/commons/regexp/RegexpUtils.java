@@ -17,7 +17,7 @@ public final class RegexpUtils {
 
     public static final String PHONE = "^\\+?\\d+[\\d\\-]*\\d$";
 
-    public static final String EMAIL = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+" +
+    public static final String EMAIL = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+" +
             "(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
     public static final String IMAGE_FILE = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";

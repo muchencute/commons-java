@@ -26,6 +26,7 @@ public class RegexpUtilsTest extends TestCase {
         Assert.assertTrue(Pattern.matches(EMAIL, "nothingmi@muchencute.com"));
         Assert.assertTrue(Pattern.matches(EMAIL, "eileen.gu@cri-report.com"));
         Assert.assertTrue(Pattern.matches(EMAIL, "eileen.gu@abc.com.co"));
+        Assert.assertTrue(Pattern.matches(EMAIL, "Eileen.GU@abc.com.co"));
     }
 
     public void testPhone() {

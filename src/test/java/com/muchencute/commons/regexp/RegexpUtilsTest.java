@@ -35,4 +35,12 @@ public class RegexpUtilsTest extends TestCase {
         Assert.assertTrue(Pattern.matches(PHONE, "+86-18620398354"));
         Assert.assertTrue(Pattern.matches(PHONE, "+86-731-8993-2530"));
     }
+
+    public void testNormalizeReplacement() {
+
+        Pattern pattern = Pattern.compile("(?i)price");
+        String case_1 = "The dog is price";
+        String expected_1 = "The dog is $100";
+        Assert.assertEquals(expected_1, pattern.matcher(case_1).replaceAll(RegexpUtils.normalizeReplacement("$100")));
+    }
 }

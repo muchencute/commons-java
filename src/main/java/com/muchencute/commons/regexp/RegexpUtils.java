@@ -2,7 +2,7 @@ package com.muchencute.commons.regexp;
 
 /**
  * 包含常用的正则表达式
- *
+ * <p>
  * 参看: http://www.mkyong.com/regular-expressions/10-java-regular-expression-examples-you-should-know/
  */
 public final class RegexpUtils {
@@ -36,4 +36,12 @@ public final class RegexpUtils {
 
     public static final String EXTRACT_HTML_LINK = "\\s*(?i)href\\s*=\\s*(\\\"([^\"]*\\\")|'[^']*'|([^'\">\\s]+))";
 
+    /**
+     * 因为 / 和 $ 在做替换字符串时是有意义的，所以要进行再次转义，不然会报错
+     */
+    public static String normalizeReplacement(final String replacement) {
+
+        return replacement.replaceAll("\\\\", "\\\\")
+                .replaceAll("\\$", "\\\\\\$");
+    }
 }

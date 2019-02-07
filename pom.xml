@@ -3,7 +3,7 @@
 
     <groupId>com.github.muchencute</groupId>
     <artifactId>commons</artifactId>
-    <version>1.0.31</version>
+    <version>1.0.32</version>
     <packaging>jar</packaging>
 
     <name>Muchencute.com - Commons</name>

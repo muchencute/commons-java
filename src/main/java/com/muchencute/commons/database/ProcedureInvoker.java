@@ -4,8 +4,6 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 /**
  * MySQL
@@ -88,8 +86,9 @@ public class ProcedureInvoker {
                     final List list = (List) params[i];
                     final Array parameters;
                     if (list.isEmpty()) {
-                        mErrorOccured = true;
-                        mErrorMessage = String.format("数组参数为空", params.getClass());
+                        mStatement.setArray(i + 1,
+                                mConnection.createArrayOf("varchar", list.toArray())
+                        );
                     } else if (list.get(0) instanceof Integer) {
                         mStatement.setArray(i + 1,
                                 mConnection.createArrayOf("integer", list.toArray())

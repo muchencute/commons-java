@@ -82,6 +82,13 @@ public class ProcedureInvoker {
                     mStatement.setBoolean(i + 1, (Boolean) params[i]);
                 } else if (params[i] instanceof Long) {
                     mStatement.setLong(i + 1, (Long) params[i]);
+                } else if (params[i] instanceof GenericList) {
+                    final GenericList genericList = (GenericList) params[i];
+                    final List list = genericList.getList();
+                    final String sqlType = genericList.getSqlType();
+                    mStatement.setArray(i + 1,
+                            mConnection.createArrayOf(sqlType, list.toArray())
+                    );
                 } else if (params[i] instanceof List) {
                     final List list = (List) params[i];
                     final Array parameters;

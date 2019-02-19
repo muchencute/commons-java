@@ -73,6 +73,8 @@ public class ProcedureInvoker {
                     mStatement.setInt(i + 1, (Integer) params[i]);
                 } else if (params[i] instanceof Float) {
                     mStatement.setFloat(i + 1, (Float) params[i]);
+                } else if (params[i] instanceof Double) {
+                    mStatement.setDouble(i + 1, (Double) params[i]);
                 } else if (params[i] instanceof String) {
                     mStatement.setString(i + 1, (String) params[i]);
                 } else if (params[i] instanceof OutParam) {
